@@ -76,7 +76,6 @@ em {
 .texto-mensagem{
   font-size: 14px;
   margin: 5px;
-  overflow: hidden;
   word-break: break-word;
 }
 

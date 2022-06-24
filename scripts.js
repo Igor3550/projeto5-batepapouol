@@ -3,6 +3,7 @@ let novaMsg;
 let usuario = ''
 let intervalConexaoId;
 let intervalMesgId;
+let participantes;
 
 function entrarNaSala(name) {
   const res = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants', {name: name});
@@ -18,13 +19,13 @@ function manterConexão() {
   res.catch((error) => {
     clearInterval(intervalConexaoId);
     clearInterval(intervalMesgId);
-    
+    console.log(error)
     if(error.response.status === 400){
-      alert("Usuario desconectado!")
-      iniciar();
+      alert("Usuario desconectado!");
+      window.location.reload()
     }else{
-      alert(`Ocorreu um: ErrorCode: ${error.response.status}`)
-      iniciar();
+      alert(`Ocorreu um: ErrorCode: ${error.response.status}`);
+      window.location.reload()
     }
   });
 }
@@ -42,6 +43,14 @@ function enviarMensagem(elementoButtonEnviar) {
     type: "message"
     
   });
+  res.then((res)=>{
+    console.log(res.data)
+  })
+  res.catch((error)=>{
+    alert("Usuario desconectado!");
+    console.log(error);
+    window.location.reload();
+  })
 
   elementoPai.querySelector('input').value = '';
 }
@@ -51,6 +60,16 @@ function buscarMensagens() {
   res.then((res)=>{
     listaMensagens = res.data;
     renderizarMensagens()
+  })
+  res.catch((error)=>{
+    console.log(error)
+  })
+}
+
+function buscarParticipantes(){
+  const res = axios.get('https://mock-api.driven.com.br/api/v6/uol/participants');
+  res.then((res)=>{
+    console.log(res.data)
   })
   res.catch((error)=>{
     console.log(error)
@@ -75,7 +94,7 @@ function retornoErro(error) {
 
 function renderizarMensagens() {
   const elementoChat = document.querySelector('.chat');
-  elementoChat.innerHTML = ''
+  elementoChat.innerHTML = '';
   for (let i=0; i<listaMensagens.length; i++){
     renderizarMensagem(listaMensagens[i]);
   }
