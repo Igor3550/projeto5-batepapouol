@@ -16,6 +16,9 @@ function manterConexão() {
     //console.log(res)
   })
   res.catch((error) => {
+    clearInterval(intervalConexaoId);
+    clearInterval(intervalMesgId);
+    
     if(error.response.status === 400){
       alert("Usuario desconectado!")
       iniciar();
@@ -26,8 +29,21 @@ function manterConexão() {
   });
 }
 
-function enviarMensagem() {
-  const res = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', {});
+function enviarMensagem(elementoButtonEnviar) {
+
+  let elementoPai = elementoButtonEnviar.parentNode
+  let mensagem = elementoPai.querySelector('input').value
+
+  const res = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', {
+    
+    from: usuario,
+    to: "Todos",
+    text: mensagem,
+    type: "message"
+    
+  });
+
+  elementoPai.querySelector('input').value = '';
 }
 
 function buscarMensagens() {
@@ -79,7 +95,7 @@ function renderizarMensagem(msg){
     <div class="mensagem">
       <div class="texto-mensagem"><em>${msg.time}</em> <strong>${msg.from}</strong> para <strong>${msg.to}</strong>: ${msg.text}</div>
     </div>`
-  }else if(msg.type === 'message'){
+  }else if(msg.type === 'private_message'){
     elementoChat.innerHTML += `
     <div class="mensagem reservada">
       <div class="texto-mensagem"><em>${msg.time}</em> <strong>${msg.from}</strong> para <strong>${msg.to}</strong>: ${msg.text}</div>
