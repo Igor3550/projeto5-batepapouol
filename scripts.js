@@ -1,14 +1,33 @@
 let listaMensagens = undefined;
-let novaMsg;
-let usuario = ''
+let listaParticipantes;
 let intervalConexaoId;
 let intervalMesgId;
-let participantes;
+let intervalParticipantesId;
+let usuario = ''
+let visibilidade;
+let participanteSelecionado = 'Todos'
+let typeMsg = 'message'
 
 function entrarNaSala(name) {
   const res = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants', {name: name});
-  res.then(retornoDoServidor);
-  res.catch(retornoErro);
+  res.then((res)=>{
+    {
+      buscarMensagens();
+      buscarParticipantes();
+      intervalConexaoId = setInterval(manterConexão, 5000);
+      intervalMesgId = setInterval(buscarMensagens, 3000);
+      intervalParticipantesId = setInterval(buscarParticipantes, 10000);
+    }
+  });
+  res.catch((error)=>{
+    console.log(error.response)
+    if(error.response.status === 400){
+      alert("Usuario invalido!")
+      iniciar();
+    }else{
+      alert(`Ocorreu um: ErrorCode: ${error.response.status}`)
+    }
+  });
 }
 
 function manterConexão() {
@@ -19,6 +38,7 @@ function manterConexão() {
   res.catch((error) => {
     clearInterval(intervalConexaoId);
     clearInterval(intervalMesgId);
+    clearInterval(intervalParticipantesId);
     console.log(error)
     if(error.response.status === 400){
       alert("Usuario desconectado!");
@@ -38,18 +58,24 @@ function enviarMensagem(elementoButtonEnviar) {
   const res = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', {
     
     from: usuario,
-    to: "Todos",
+    to: participanteSelecionado,
     text: mensagem,
-    type: "message"
+    type: typeMsg
     
   });
   res.then((res)=>{
     console.log(res.data)
   })
   res.catch((error)=>{
-    alert("Usuario desconectado!");
     console.log(error);
-    window.location.reload();
+    console.log({
+      from: usuario,
+      to: participanteSelecionado,
+      text: mensagem,
+      type: typeMsg  
+    });
+    alert("Usuario desconectado!");
+    //window.location.reload();
   })
 
   elementoPai.querySelector('input').value = '';
@@ -69,27 +95,56 @@ function buscarMensagens() {
 function buscarParticipantes(){
   const res = axios.get('https://mock-api.driven.com.br/api/v6/uol/participants');
   res.then((res)=>{
-    console.log(res.data)
+    listaParticipantes = res.data
+    renderizarParticipantes();
   })
   res.catch((error)=>{
     console.log(error)
   })
 }
 
-function retornoDoServidor(res) {
-  //console.log(res.data);
-  intervalConexaoId = setInterval(manterConexão, 5000);
-  intervalMesgId = setInterval(buscarMensagens, 3000);
-}
+function renderizarParticipantes() {
 
-function retornoErro(error) {
-  console.log(error.response)
-  if(error.response.status === 400){
-    alert("Usuario invalido!")
-    iniciar();
-  }else{
-    alert(`Ocorreu um: ErrorCode: ${error.response.status}`)
+  const areaParticipantes = document.querySelector('.tela-participantes .participantes');
+  areaParticipantes.innerHTML = ''
+  participanteSelecionado = ''
+
+  for (let i=0; i<listaParticipantes.length; i++){
+
+    if(participanteSelecionado === listaParticipantes[i].name){
+      participanteSelecionado = listaParticipantes[i].name
+      areaParticipantes.innerHTML += `
+      <div class="participante" onclick="checkmarkParticipante(this)">
+        <span>
+          <ion-icon name="person-circle"></ion-icon> <p>${listaParticipantes[i].name}</p>
+        </span>
+
+        <img src="/assets/checkmark.svg" class="checkmark marcar-check">
+      </div>
+    `
+    }else{
+      areaParticipantes.innerHTML += `
+        <div class="participante" onclick="checkmarkParticipante(this)">
+          <span>
+            <ion-icon name="person-circle"></ion-icon> <p>${listaParticipantes[i].name}</p>
+          </span>
+  
+          <img src="/assets/checkmark.svg" class="checkmark">
+        </div>
+      `
+    }
   }
+
+  if(participanteSelecionado === ''){
+    /* 
+    setando o estado do participante online selecionado quando a lista atualizar
+    */
+    const opcaoTodos = document.querySelector('.tela-participantes .todos');
+    opcaoTodos.querySelector('.checkmark').classList.add('marcar-check')
+    participanteSelecionado = 'Todos';
+  }
+
+  
 }
 
 function renderizarMensagens() {
@@ -115,19 +170,53 @@ function renderizarMensagem(msg){
       <div class="texto-mensagem"><em>${msg.time}</em> <strong>${msg.from}</strong> para <strong>${msg.to}</strong>: ${msg.text}</div>
     </div>`
   }else if(msg.type === 'private_message'){
-    elementoChat.innerHTML += `
-    <div class="mensagem reservada">
-      <div class="texto-mensagem"><em>${msg.time}</em> <strong>${msg.from}</strong> para <strong>${msg.to}</strong>: ${msg.text}</div>
-    </div>`
+    if(msg.to === usuario || msg.from === usuario){
+      elementoChat.innerHTML += `
+      <div class="mensagem reservada">
+        <div class="texto-mensagem"><em>${msg.time}</em> <strong>${msg.from}</strong> para <strong>${msg.to}</strong>: ${msg.text}</div>
+      </div>`
+    }
   }
 
   const ultimaMsg = elementoChat.querySelector('.mensagem:last-child');
   ultimaMsg.scrollIntoView();
 }
 
+function esconderBarraLateral(){
+  let barraLateral = document.querySelector('.tela-participantes')
+  barraLateral.classList.toggle('esconder')
+}
+
+function checkmarkParticipante(elemento){
+
+  const elementoPai = elemento.parentNode.parentNode
+  elementoPai.querySelector('.marcar-check').classList.remove('marcar-check')
+  elemento.querySelector('.checkmark').classList.add('marcar-check')
+  participanteSelecionado = elemento.querySelector('p').innerHTML
+
+  console.log(participanteSelecionado)
+}
+
+function checkmarkVisibilidade(elemento){
+
+  const elementoPai = elemento.parentNode
+  elementoPai.querySelector('.marcar-check').classList.remove('marcar-check')
+  elemento.querySelector('.checkmark').classList.add('marcar-check')
+  visibilidade = elemento.querySelector('p').innerHTML
+
+  if(visibilidade === 'Público'){
+    typeMsg = 'message'
+  }else if(visibilidade === 'Privado'){
+    typeMsg = 'private_message'
+  }
+
+  console.log(visibilidade, typeMsg)
+}
+
 function iniciar(){
   do {
-    usuario = prompt("Digite o seu nome:")
+    usuario = "ze";
+    //usuario = prompt("Digite o seu nome:")
   }while(usuario === '');
   
   entrarNaSala(usuario);

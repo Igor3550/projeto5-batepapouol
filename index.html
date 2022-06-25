@@ -14,11 +14,55 @@
   <title>Bate-papo-Uol</title>
 </head>
 <body>
+  <div class="tela-participantes">
+    <div class="lateral-cinza" onclick="esconderBarraLateral()"></div>
+
+    <div class="area-conteudo-barra">
+
+      <div class="titulo">Escolha um contato
+        para enviar mensagem:</div>
+      <div class="aerea-participantes">
+
+        <div class="todos" onclick="checkmarkParticipante(this)">
+          <span>
+            <ion-icon name="people"></ion-icon> <p>Todos</p>
+          </span>
+          <img src="/assets/checkmark.svg" class="checkmark marcar-check">
+
+        </div>
+        <div class="participantes">
+          <div class="participante" onclick="checkmarkParticipante(this)">
+            <span>
+              <ion-icon name="person-circle"></ion-icon> <p>participante</p>
+            </span>
+  
+            <img src="/assets/checkmark.svg" class="checkmark">
+          </div>
+        </div>
+        
+      </div>
+
+      <div class="visibilidade">
+        <div class="titulo">
+          Escolha a visibilidade:
+        </div>
+        <div class="publico" onclick="checkmarkVisibilidade(this)">
+          <div><ion-icon name="lock-open"></ion-icon> <p>Público</p></div>
+          <img src="/assets/checkmark.svg" class="checkmark marcar-check">
+        </div>
+        <div class="privado" onclick="checkmarkVisibilidade(this)">
+          <div><ion-icon name="lock-closed"></ion-icon><p>Privado</p></div>
+          <img src="/assets/checkmark.svg" class="checkmark">
+        </div>
+      </div>
+
+    </div>
+  </div>
   <div class="pagina">
     <div class="area-topo">
       <div class="topo">
         <img src="/assets/logo.png" alt="logo">
-        <ion-icon name="people"></ion-icon>
+        <ion-icon name="people" onclick="esconderBarraLateral()"></ion-icon>
       </div>
     </div>
 

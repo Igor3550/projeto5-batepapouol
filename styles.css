@@ -1,5 +1,6 @@
 body{
   background-color: #F3F3F3;
+  font-family: Roboto;
 }
 .pagina {
   max-width: 614px;
@@ -55,7 +56,7 @@ em {
 
 .chat {
   width: 100%;
-  height: 100%;
+  max-height: 90%;
   display: flex;
   flex-direction: column;
   background-color: #F3F3F3;
@@ -67,7 +68,7 @@ em {
   width: 100%;
   min-height: 40px;
   background-color: white;
-  margin: 5px 0;
+  margin: 2px 0;
   display: flex;
   align-items: center;
   border-radius: 3px;
@@ -92,6 +93,7 @@ em {
   position: fixed;
   left: 0;
   bottom: 0;
+  z-index: 1;
 }
 
 .rodape{
@@ -123,4 +125,88 @@ em {
 .rodape ion-icon{
   font-size: 30px;
   margin-right: 20px;
+}
+
+.tela-participantes{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 10;
+}
+
+.tela-participantes .lateral-cinza{
+  width: 30%;
+  height: 100%;
+  left: 0;
+  background-color: rgba(0,0,0, 0.6);
+  position: fixed;
+}
+
+.tela-participantes .area-conteudo-barra{
+  background-color: white;
+  width: 70%;
+  height: 100%;
+  position: fixed;
+  right: 0;
+  font-size: 16px;
+  padding: 0 10px;
+}
+
+.tela-participantes .area-conteudo-barra ion-icon{
+  font-size: 22px;
+  margin: 10px;
+}
+
+.area-conteudo-barra .participantes {
+  max-height: 350px;
+  overflow-y: scroll;
+}
+
+.area-conteudo-barra .participantes div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.area-conteudo-barra .participantes div span {
+  display: flex;
+  align-items: center;
+}
+
+.area-conteudo-barra .visibilidade div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.todos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.todos span {
+  display: flex;
+  align-items: center;
+}
+
+.checkmark{
+  width: 14px;
+  margin-right: 10px;
+  opacity: 0;
+}
+
+.marcar-check{
+  opacity: 1;
+}
+
+.titulo {
+  width: 65%;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  margin: 20px auto;
+}
+.esconder {
+  display: none;
 }
