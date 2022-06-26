@@ -50,34 +50,28 @@ function manterConexão() {
   });
 }
 
-function enviarMensagem(elementoButtonEnviar) {
+function enviarMensagem() {
 
-  let elementoPai = elementoButtonEnviar.parentNode
+  let elementoPai = document.querySelector('.area-rodape .rodape')
   let mensagem = elementoPai.querySelector('input').value
-
-  const res = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', {
-    
-    from: usuario,
-    to: participanteSelecionado,
-    text: mensagem,
-    type: typeMsg
-    
-  });
-  res.then((res)=>{
-    console.log(res.data)
-  })
-  res.catch((error)=>{
-    console.log(error);
-    console.log({
+  if(mensagem !== ''){
+    const res = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', {
+      
       from: usuario,
       to: participanteSelecionado,
       text: mensagem,
-      type: typeMsg  
+      type: typeMsg
+      
     });
-    alert("Usuario desconectado!");
-    //window.location.reload();
-  })
-
+    res.then((res)=>{
+      console.log(res.data)
+    })
+    res.catch((error)=>{
+      console.log(error);
+      alert("Erro ao enviar mensagem!");
+      //window.location.reload();
+    })
+  }
   elementoPai.querySelector('input').value = '';
 }
 
@@ -107,12 +101,12 @@ function renderizarParticipantes() {
 
   const areaParticipantes = document.querySelector('.tela-participantes .participantes');
   areaParticipantes.innerHTML = ''
-  participanteSelecionado = ''
+  let participante = ''
 
   for (let i=0; i<listaParticipantes.length; i++){
 
     if(participanteSelecionado === listaParticipantes[i].name){
-      participanteSelecionado = listaParticipantes[i].name
+      participante = listaParticipantes[i].name
       areaParticipantes.innerHTML += `
       <div class="participante" onclick="checkmarkParticipante(this)">
         <span>
@@ -135,7 +129,7 @@ function renderizarParticipantes() {
     }
   }
 
-  if(participanteSelecionado === ''){
+  if(participante === ''){
     /* 
     setando o estado do participante online selecionado quando a lista atualizar
     */
@@ -153,7 +147,6 @@ function renderizarMensagens() {
   for (let i=0; i<listaMensagens.length; i++){
     renderizarMensagem(listaMensagens[i]);
   }
-
 }
 
 function renderizarMensagem(msg){
@@ -179,7 +172,9 @@ function renderizarMensagem(msg){
   }
 
   const ultimaMsg = elementoChat.querySelector('.mensagem:last-child');
-  ultimaMsg.scrollIntoView();
+  if(ultimaMsg !== null){
+    ultimaMsg.scrollIntoView();
+  }
 }
 
 function esconderBarraLateral(){
@@ -200,7 +195,10 @@ function checkmarkParticipante(elemento){
 function checkmarkVisibilidade(elemento){
 
   const elementoPai = elemento.parentNode
-  elementoPai.querySelector('.marcar-check').classList.remove('marcar-check')
+  const elementoCheck = elementoPai.querySelector('.marcar-check')
+  if(elementoCheck !== null){
+    elementoCheck.classList.remove('marcar-check')
+  }
   elemento.querySelector('.checkmark').classList.add('marcar-check')
   visibilidade = elemento.querySelector('p').innerHTML
 
@@ -215,11 +213,17 @@ function checkmarkVisibilidade(elemento){
 
 function iniciar(){
   do {
-    usuario = "ze";
-    //usuario = prompt("Digite o seu nome:")
+    usuario = prompt("Digite o seu nome:")
   }while(usuario === '');
   
   entrarNaSala(usuario);
+
 }
+let inputTextoElemento = document.querySelector('.rodape input')
+inputTextoElemento.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){
+    enviarMensagem();
+  }
+})
 
 iniciar();
