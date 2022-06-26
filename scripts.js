@@ -22,8 +22,7 @@ function entrarNaSala(name) {
   res.catch((error)=>{
     console.log(error.response)
     if(error.response.status === 400){
-      alert("Usuario invalido!")
-      iniciar();
+      alert("Usuario invalido!");
     }else{
       alert(`Ocorreu um: ErrorCode: ${error.response.status}`)
     }
@@ -34,6 +33,7 @@ function manterConexão() {
   const res = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', {name: usuario});
   res.then((res) => {
     //console.log(res)
+    document.querySelector('.tela-login').classList.add('esconder')
   })
   res.catch((error) => {
     clearInterval(intervalConexaoId);
@@ -189,6 +189,9 @@ function checkmarkParticipante(elemento){
   elemento.querySelector('.checkmark').classList.add('marcar-check')
   participanteSelecionado = elemento.querySelector('p').innerHTML
 
+  let legendaReservada = document.querySelector('.legenda-reservada');
+  legendaReservada.innerHTML = `Enviando para ${participanteSelecionado} (reservadamente)`
+
   console.log(participanteSelecionado)
 }
 
@@ -203,27 +206,26 @@ function checkmarkVisibilidade(elemento){
   visibilidade = elemento.querySelector('p').innerHTML
 
   if(visibilidade === 'Público'){
-    typeMsg = 'message'
+    typeMsg = 'message';
+    document.querySelector('.legenda-reservada').classList.add('esconder');
   }else if(visibilidade === 'Privado'){
-    typeMsg = 'private_message'
+    typeMsg = 'private_message';
+    let legendaReservada = document.querySelector('.legenda-reservada');
+    legendaReservada.innerHTML = `Enviando para ${participanteSelecionado} (reservadamente)`
+    legendaReservada.classList.remove('esconder')
   }
 
   console.log(visibilidade, typeMsg)
 }
 
-function iniciar(){
-  do {
-    usuario = prompt("Digite o seu nome:")
-  }while(usuario === '');
-  
+function fazerLogin(){
+  usuario = document.querySelector('.tela-login input').value
   entrarNaSala(usuario);
-
 }
+
 let inputTextoElemento = document.querySelector('.rodape input')
 inputTextoElemento.addEventListener('keydown', (e)=>{
   if(e.key === 'Enter'){
     enviarMensagem();
   }
 })
-
-iniciar();

@@ -14,6 +14,13 @@
   <title>Bate-papo-Uol</title>
 </head>
 <body>
+
+  <div class="tela-login">
+    <img src="/assets/logo 2.svg" alt="logo">
+    <input type="text" placeholder="Digite seu nome">
+    <div class="button-login" onclick="fazerLogin()">Entrar</div>
+  </div>
+
   <div class="tela-participantes esconder">
     <div class="lateral-cinza" onclick="esconderBarraLateral()"></div>
 
@@ -59,6 +66,7 @@
     </div>
   </div>
   <div class="pagina">
+
     <div class="area-topo">
       <div class="topo">
         <img src="/assets/logo.png" alt="logo">
@@ -74,7 +82,12 @@
     </div>
     <div class="area-rodape">
       <div class="rodape">
-        <input type="text" placeholder="Escreva aqui..." >
+        <div>
+          <input type="text" placeholder="Escreva aqui..." >
+          <div class="legenda-reservada esconder">
+            Enviando para  (reservadamente)
+          </div>
+        </div>
         <div class="send-message-button" onclick="enviarMensagem()">
           <ion-icon name="paper-plane-outline"></ion-icon>
         </div>
