@@ -3,10 +3,10 @@ let listaParticipantes;
 let intervalConexaoId;
 let intervalMesgId;
 let intervalParticipantesId;
-let usuario = ''
+let usuario = '';
 let visibilidade;
-let participanteSelecionado = 'Todos'
-let typeMsg = 'message'
+let participanteSelecionado = 'Todos';
+let typeMsg = 'message';
 
 function entrarNaSala(name) {
   const res = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants', {name: name});
@@ -136,8 +136,9 @@ function renderizarParticipantes() {
     const opcaoTodos = document.querySelector('.tela-participantes .todos');
     opcaoTodos.querySelector('.checkmark').classList.add('marcar-check')
     participanteSelecionado = 'Todos';
+    let legendaReservada = document.querySelector('.legenda-reservada');
+    legendaReservada.innerHTML = `Enviando para ${participanteSelecionado} (reservadamente)`
   }
-
   
 }
 
