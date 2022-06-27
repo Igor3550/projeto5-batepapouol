@@ -4,7 +4,7 @@ let intervalConexaoId;
 let intervalMesgId;
 let intervalParticipantesId;
 let usuario = '';
-let visibilidade;
+let visibilidade = 'Público';
 let participanteSelecionado = 'Todos';
 let typeMsg = 'message';
 
@@ -137,7 +137,9 @@ function renderizarParticipantes() {
     opcaoTodos.querySelector('.checkmark').classList.add('marcar-check')
     participanteSelecionado = 'Todos';
     let legendaReservada = document.querySelector('.legenda-reservada');
-    legendaReservada.innerHTML = `Enviando para ${participanteSelecionado} (reservadamente)`
+    legendaReservada.classList.add('esconder');
+    let publico = document.querySelector('.publico');
+    checkmarkVisibilidade(publico);
   }
   
 }
@@ -191,6 +193,13 @@ function checkmarkParticipante(elemento){
   participanteSelecionado = elemento.querySelector('p').innerHTML
 
   let legendaReservada = document.querySelector('.legenda-reservada');
+
+  if(participanteSelecionado === 'Todos'){
+    legendaReservada.classList.add('esconder');
+    let publico = document.querySelector('.publico');
+    checkmarkVisibilidade(publico);
+  }
+
   legendaReservada.innerHTML = `Enviando para ${participanteSelecionado} (reservadamente)`
 
   console.log(participanteSelecionado)
@@ -200,20 +209,24 @@ function checkmarkVisibilidade(elemento){
 
   const elementoPai = elemento.parentNode
   const elementoCheck = elementoPai.querySelector('.marcar-check')
+  
   if(elementoCheck !== null){
-    elementoCheck.classList.remove('marcar-check')
-  }
-  elemento.querySelector('.checkmark').classList.add('marcar-check')
-  visibilidade = elemento.querySelector('p').innerHTML
 
-  if(visibilidade === 'Público'){
-    typeMsg = 'message';
-    document.querySelector('.legenda-reservada').classList.add('esconder');
-  }else if(visibilidade === 'Privado'){
-    typeMsg = 'private_message';
-    let legendaReservada = document.querySelector('.legenda-reservada');
-    legendaReservada.innerHTML = `Enviando para ${participanteSelecionado} (reservadamente)`
-    legendaReservada.classList.remove('esconder')
+    visibilidade = elemento.querySelector('p').innerHTML
+
+    if(visibilidade === 'Público'){
+      elementoCheck.classList.remove('marcar-check')
+      typeMsg = 'message';
+      document.querySelector('.legenda-reservada').classList.add('esconder');
+      elemento.querySelector('.checkmark').classList.add('marcar-check')
+    }else if(visibilidade === 'Privado' && participanteSelecionado !== 'Todos'){
+      elementoCheck.classList.remove('marcar-check')
+      typeMsg = 'private_message';
+      let legendaReservada = document.querySelector('.legenda-reservada');
+      legendaReservada.innerHTML = `Enviando para ${participanteSelecionado} (reservadamente)`
+      legendaReservada.classList.remove('esconder');
+      elemento.querySelector('.checkmark').classList.add('marcar-check')
+    }
   }
 
   console.log(visibilidade, typeMsg)
